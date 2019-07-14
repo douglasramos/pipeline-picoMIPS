@@ -16,6 +16,7 @@ package types is
 	
 	constant word_vector_init: word_type := (others => '0');
 	constant word_vector_test: word_type := (others => '1');
-	constant word_vector_test2: word_type :=(1 | 3 | 5 | 7 => '0', others => '1');
+	
+	constant word_vector_instruction1: word_type :=(1 | 3 | 5 | 7 => '0', others => '1');
 	
 end package types;

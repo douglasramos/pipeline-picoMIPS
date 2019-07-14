@@ -22,9 +22,8 @@ entity CacheD is
     port (
 		
 		-- I/O relacionados ao controle
-		control_index:   in  std_logic;
 		write_options:   in  std_logic_vector(1 downto 0);
-		buffer_write:    in  std_logic;
+		mem_write:       in  std_logic;
 		update_info:     in  std_logic;
 		hit:             out std_logic := '0';
 		dirty_bit:       out std_logic := '0';
@@ -57,7 +56,7 @@ architecture CacheD_arch of CacheD is
 	type set_row_type is record
          valid: std_logic;
 		 dirty: std_logic;
-         tag:   std_logic_vector(1 downto 0);
+         tag:   std_logic_vector(2 downto 0);
          data:  word_vector_type(words_per_block - 1 downto 0);
     end record set_row_type;
 	
@@ -67,6 +66,12 @@ architecture CacheD_arch of CacheD is
 										     dirty => '0',
 										     tag =>   (others => '0'),   
 											 data =>  (others => word_vector_init));	
+											 
+	constant set_with_instruction_1 : set_row_type := (valid => '1',
+										               dirty =>  '0',
+										               tag =>    "011",   
+											           data =>  (2 => word_vector_instruction1 , 
+													            others => word_vector_init));										
 	
     --- Cache é formado por um array de conjuntos
 	type set_vector_type is record
@@ -76,13 +81,16 @@ architecture CacheD_arch of CacheD is
 	type cache_type is array (number_of_sets - 1 downto 0) of set_vector_type;
 	
 	constant cache_set_init : set_vector_type := (set => (others => set_row_init));
-														   
-    signal cache: cache_type := (others => cache_set_init); --- definicao do cache
+	
+	constant cache_set_instruction1 : set_vector_type := (set => (0 => set_with_instruction_1, 1 => set_row_init));  
+	
+	--- definicao do cache
+    signal cache: cache_type := (1 => cache_set_instruction1, others => cache_set_init); 
 	
 	signal mem_block_addr: natural;
 	signal index: natural;
 	signal word_offset: natural;
-	signal tag: std_logic_vector(1 downto 0);
+	signal tag: std_logic_vector(2 downto 0);
 	signal set_index: natural;
 	signal hit_signal: std_logic; --- sinal interno utilizado para poder usar o hit na logica do set_index
 	
@@ -91,7 +99,7 @@ begin
 	-- obtem campos do cache a partir do endereço de entrada
 	mem_block_addr <= to_integer(unsigned(cpu_adrr(15 downto 6)));
 	index <= mem_block_addr mod number_of_sets;
-	tag <= cpu_adrr(15 downto 14);
+	tag <= cpu_adrr(15 downto 13);
 	word_offset <= to_integer(unsigned(cpu_adrr(5 downto 2)));
 		
 	-- Logica que define o index dentro do conjunto em caso de hit ou nao.
@@ -109,7 +117,7 @@ begin
 	
 	hit <= hit_signal;
 	
-	data_out <=	cache(index).set(set_index).data(word_offset);
+	data_out <=	cache(index).set(set_index).data(word_offset) after access_time;
 	
 	mem_addr <= cpu_adrr;
 	
@@ -117,10 +125,10 @@ begin
 	
 	set_valid <= cache(index).set(0).valid & cache(index).set(1).valid;
 	
-	mem_block_out <= cache(index).set(set_index).data after access_time;
+	mem_block_out <= cache(index).set(set_index).data;
 	
 	-- atualizacao do cache de acordo com os sinais de controle
-	process(update_info, write_options, buffer_write)
+	process(update_info, write_options, mem_write)
 	begin
 		if (update_info'event or write_options'event) then
 			
