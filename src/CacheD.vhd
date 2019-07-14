@@ -17,7 +17,7 @@ use pipeline.types.all;
 
 entity CacheD is
     generic (
-        time_acess: in time := 5 ns
+        access_time: in time := 5 ns
     );
     port (
 		
@@ -117,7 +117,7 @@ begin
 	
 	set_valid <= cache(index).set(0).valid & cache(index).set(1).valid;
 	
-	mem_block_out <= cache(index).set(set_index).data after time_acess;
+	mem_block_out <= cache(index).set(set_index).data after access_time;
 	
 	-- atualizacao do cache de acordo com os sinais de controle
 	process(update_info, write_options, buffer_write)
@@ -137,13 +137,13 @@ begin
 				cache(index).set(set_index).data <= mem_block_in;	
 				
 			elsif (write_options = "10") then
-				cache(index).set(set_index).data(word_offset) <= data_in after time_acess;
+				cache(index).set(set_index).data(word_offset) <= data_in after access_time;
 				cache(index).set(set_index).dirty <= '1'; 
 			end if;
 			
 			-- Escreve na memoria
 			--if (buffer_write'event and buffer_write = '1') then
-				--mem_block_out <= cache(index).set(set_index).data after time_acess;
+				--mem_block_out <= cache(index).set(set_index).data after access_time;
 			--end if;
 			
 		end if;

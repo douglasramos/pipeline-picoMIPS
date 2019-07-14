@@ -77,7 +77,7 @@ begin
 							state <= MISS;								
                 		end if;
 
-					elsif cpu_write = '1' then -- Escrita
+					elsif cpu_write = '1' and clk_pipeline = '1' then -- Escrita no primeiro ciclo
 						if dirty_bit = '1' then
 							state <= MWRITE;	-- precisa colocar dado atual na Memoria primeiro
 						elsif dirty_bit = '0' then
