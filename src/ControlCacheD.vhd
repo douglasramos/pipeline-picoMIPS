@@ -26,17 +26,16 @@ entity ControlCacheD is
 		clk_pipeline: in std_logic;
         cpu_write:    in std_logic;
 		cpu_addr:     in std_logic_vector(15 downto 0);
-		stall: out std_logic := '0';
+		stall:        out std_logic := '0';
 		
 		-- I/O relacionados ao cache
 		dirty_bit:       in  std_logic;
 		set_valid:       in  std_logic_vector(1 downto 0);
 		hit_signal:      in  std_logic;
-		write_buffer:    out std_logic;
 		write_options:   out std_logic_vector(1 downto 0) := "00";
 		update_info:     out std_logic := '0';
 		
-        -- I/O relacionados a MREADYoria princial
+        -- I/O relacionados a Memoria princial
 		mem_ready:      in  std_logic;
 		mem_rw:         out std_logic := '0';  --- '1' write e '0' read
         mem_enable:     out std_logic := '0'
@@ -53,7 +52,7 @@ architecture ControlCacheD_arch of ControlCacheD is
 begin 
 	process (clk, clk_pipeline, cpu_addr)									  
 	begin
-		if rising_edge(clk) then -- talvez precise do rising_edge do clk pipeline
+		if rising_edge(clk) or cpu_addr'event then -- talvez precise do rising_edge do clk pipeline
 			case state is 
 				
 				--- estado inicial
@@ -131,9 +130,10 @@ begin
 	--- saidas ---
 	
 	-- stall -- trava pipeline
-	stall <= '1' after access_time when state = MISS   or 
-										state = CTAG2  or
-										state = MWRITE else '0';  
+	stall <= '1' when state = MISS   or 
+					  state = MREADY or
+					  state = CTAG2  or
+					  state = MWRITE else '0';  
 	         
 	-- write_options
 	write_options <= "01" when state = MREADY   else

@@ -113,7 +113,9 @@ begin
 	mem_rw <= '0'; -- sempre leitra
 	
 	-- stall -- trava pipeline
-	stall <= '1' after access_time when state = MISS or state = CTAG2 else '0';  
+	stall <= '1' after access_time when state = MISS or 
+										state = MEM  or 
+										state = CTAG else '0';  
 	         
 	-- compare_tag
 	write_options <= '1' when state = MEM else '0';
