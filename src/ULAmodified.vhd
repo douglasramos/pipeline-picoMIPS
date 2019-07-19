@@ -7,7 +7,7 @@ library biblioteca_de_componentes;
 entity ULAmodified is
   generic(
        NB 		: integer := 32;
-       Tsom 	: time := 5 ns;
+       Tsom 	: time := 1 ns;   --tava 5, mudei pra 1!
        Tsub 	: time := 5 ns;
        Ttrans 	: time := 5 ns;
        Tgate 	: time := 1 ns
@@ -20,7 +20,8 @@ entity ULAmodified is
        Sinal 	: out 	std_logic;							--???
        Vaum 	: out 	std_logic;							--vai um
        Zero 	: out 	std_logic;							--???
-       C 		: out 	std_logic_vector(NB - 1 downto 0)	--resultado da operação
+       C 		: out 	std_logic_vector(NB - 1 downto 0);	--resultado da operação
+	   enable   : in    std_logic
   );
 end ULAmodified;
 
@@ -34,6 +35,7 @@ signal zeros 		    : std_logic_vector (NB - 2 downto 0) := (others => '0');
 signal Upper 	        : std_logic_vector (NB downto 0)     := ('1', others => '0');
 signal n                : integer := 2;
 signal carryIn          : integer := 1; 
+signal cUlaEn           : std_logic_vector(4 downto 0);
 
 ---------- deslocador -------------------------------
 component deslocador_combinatorio
@@ -56,19 +58,25 @@ n       <= to_integer(unsigned(B));
 carryIn <= 1 when Veum = '1' else 0;
 Eq      <= zeros & "01" when A = B else zeros & "00";
 Cmp 	<= zeros & "01" when A < B else zeros & "00";	
-	
+
+cUlaEn(0) <= cUla(0);
+cUlaEn(1) <= cUla(1);
+cUlaEn(2) <= cUla(2);
+cUlaEn(3) <= cUla(3);
+cUlaEn(4) <= enable;
+
 ---- User Signal Assignments ----
-With cUla select	  
-		S_NB <=	std_logic_vector(signed('0' &  A) + carryIn )	             when "0000",
-				std_logic_vector(signed('0' &  A) + signed(B) + carryIn )	 when "0001",
-				std_logic_vector(signed('0' &  B) + carryIn )	             when "0010",
-				std_logic_vector(signed('0' &  A) - signed(B) + carryIn )	 when "0011",
-				std_logic_vector('0' &  (A and B))	     		             when "0100",
-				std_logic_vector('0' &  (A or B))		    	             when "0101",
-				Eq			                     							 when "0110",
-				Cmp				                    						 when "0111",
-				std_logic_vector(signed('0' & D) + carryIn) 		         when "1000",
-				std_logic_vector(unsigned('0' & A) + unsigned(B) + carryIn)  when "1001",
+With cUlaEn select	  
+		S_NB <=	std_logic_vector(signed('0' &  A) + carryIn )	             when "10000",
+				std_logic_vector(signed('0' &  A) + signed(B) + carryIn )	 when "10001",
+				std_logic_vector(signed('0' &  B) + carryIn )	             when "10010",
+				std_logic_vector(signed('0' &  A) - signed(B) + carryIn )	 when "10011",
+				std_logic_vector('0' &  (A and B))	     		             when "10100",
+				std_logic_vector('0' &  (A or B))		    	             when "10101",
+				Eq			                     							 when "10110",
+				Cmp				                    						 when "10111",
+				std_logic_vector(signed('0' & D) + carryIn) 		         when "11000",
+				std_logic_vector(unsigned('0' & A) + unsigned(B) + carryIn)  when "11001",
 				(others => '0')				             					 when others;   
 
 --------------------------------------------------------------------------------------------------------------------
