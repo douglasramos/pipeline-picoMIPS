@@ -9,13 +9,13 @@ use pipeline.types.all;
 
 entity Estagio_IF is
   port(
-       clk, reset : in std_logic;
+       clk, clk_cache, reset : in std_logic;
        PCatualizado, PCdesvio : in std_logic_vector(31 downto 0);
 	   muxc : in std_logic;
        instruct, PC4 : out std_logic_vector(31 downto 0);
 	   
 	   write_options, update_info: in std_logic;
-	   hit: out std_logic;
+	   stall: out std_logic;
 	   mem_bloco_data: in  word_vector_type(15 downto 0);
 	   mem_addr: out std_logic_vector(15 downto 0) := (others => '0')
 	   
@@ -71,7 +71,7 @@ component registrador is
   );
 end component;
 ------------------------------------------------------------
------------------- Cache I ---------------------------------
+------------------------ Cache I ---------------------------
 component CacheI is
     generic (
         access_time: in time := 5 ns
@@ -91,6 +91,41 @@ component CacheI is
 		mem_addr:       out std_logic_vector(15 downto 0) := (others => '0')
     );
 end component;
+
+component ControlCacheI is
+    generic (
+        access_time: in time := 5 ns
+    );
+    port (
+	
+		clk:    in std_logic;		
+
+		-- I/O relacionados ao stage IF
+        stall:  out std_logic := '0';
+		pc:     in word_type;
+		
+		-- I/O relacionados ao cache
+		hit_signal:      in  std_logic;
+		write_options:   out std_logic := '0';
+		update_info:     out std_logic := '0';
+		
+        -- I/O relacionados a Memoria princial
+		mem_ready:      in  std_logic;
+		mem_rw:         out std_logic := '0';  --- '1' write e '0' read
+        mem_enable:     out std_logic := '0'
+        
+    );
+end component ControlCacheI; 
+
+--- sinais de ligacao entre controle do cache e o fluxo de dados do mesmo
+signal i_write_options: std_logic;
+signal i_hit: std_logic;
+signal i_update_info: std_logic; 
+
+--- sinais de memoria (deveriam vir de fora)
+signal i_mem_ready: std_logic;
+signal i_mem_rw: std_logic;
+signal i_mem_enable: std_logic;
 ------------------------------------------------------------
 
 signal PC, address: std_logic_vector(31 downto 0);
@@ -100,8 +135,10 @@ begin
 mux: multiplexador generic map (32, 0 ns, 0 ns) port map (muxc, PCatualizado, PCdesvio, PC);
 soma: somador generic map (32, 0 ns, 0 ns) port map ('1', '0', PC, "00000000000000000000000000000100", PC4);
 reg: registrador generic map (32, 0 ns, 0 ns) port map (clk, reset, '0', PC, address);
-cache: cacheI generic map (0 ns) 
-	    port map (write_options, update_info, hit, address(15 downto 0), instruct, mem_bloco_data, mem_addr);
+cache: cacheI generic map (0 ns) port map (i_write_options, i_update_info, i_hit, address(15 downto 0), instruct, mem_bloco_data, mem_addr); 
+cacheControl: ControlCacheI	generic map (0 ns) 
+                            port map (clk_cache, stall, PC, i_hit, i_write_options, i_update_info, i_mem_ready, i_mem_rw, i_mem_enable);
+
 	
 
 
