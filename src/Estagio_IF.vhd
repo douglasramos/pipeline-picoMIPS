@@ -1,3 +1,11 @@
+-- PCS3412 - Organizacao e Arquitetura de Computadores I
+-- PicoMIPS
+-- Author: Pedro Brito
+-- Co-Authors: Douglas Ramos, Rafael Higa
+--
+-- Description:
+--     Estagio Instruction Fetch do Pipeline 
+
 library IEEE;
 use IEEE.std_logic_1164.all;
 use ieee.numeric_std.all;

@@ -1,6 +1,7 @@
 -- PCS3412 - Organizacao e Arquitetura de Computadores I
 -- PicoMIPS
 -- Author: Douglas Ramos
+-- Co-Authors: Pedro Brito, Rafael Higa
 --
 -- Description:
 --     Memoria Principal

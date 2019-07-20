@@ -1,6 +1,7 @@
 -- PCS3412 - Organizacao e Arquitetura de Computadores I
 -- PicoMIPS
 -- Author: Douglas Ramos
+-- Co-Authors: Pedro Brito, Rafael Higa
 --
 -- Description:
 --     Controle do Cache de Dados
@@ -20,20 +21,20 @@ entity ControlCacheD is
     );
     port (			  
 	
-		clk:          in std_logic;		
+		clk:            in std_logic;		
 
 		-- I/O relacionados ao stage MREADY
-		clk_pipeline: in std_logic;
-        cpu_write:    in std_logic;
-		cpu_addr:     in std_logic_vector(15 downto 0);
-		stall:        out std_logic := '0';
+		clk_pipeline:   in  std_logic;
+        cpu_write:      in  std_logic;
+		cpu_addr:       in  std_logic_vector(15 downto 0);
+		stall:          out std_logic := '0';
 		
 		-- I/O relacionados ao cache
-		dirty_bit:       in  std_logic;
-		set_valid:       in  std_logic_vector(1 downto 0);
-		hit_signal:      in  std_logic;
-		write_options:   out std_logic_vector(1 downto 0) := "00";
-		update_info:     out std_logic := '0';
+		dirty_bit:      in  std_logic;
+		set_valid:      in  std_logic_vector(1 downto 0);
+		hit_signal:     in  std_logic;
+		write_options:  out std_logic_vector(1 downto 0) := "00";
+		update_info:    out std_logic := '0';
 		
         -- I/O relacionados a Memoria princial
 		mem_ready:      in  std_logic;

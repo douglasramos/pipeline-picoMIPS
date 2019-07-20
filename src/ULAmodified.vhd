@@ -1,3 +1,11 @@
+-- PCS3412 - Organizacao e Arquitetura de Computadores I
+-- PicoMIPS
+-- Author: Rafael Higa 
+-- Co-Authors: Pedro Brito, Douglas Ramos 
+--
+-- Description:
+--     ULA modificada 
+
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;

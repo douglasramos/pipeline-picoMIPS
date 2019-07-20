@@ -1,7 +1,7 @@
 -- PCS3412 - Organizacao e Arquitetura de Computadores I
 -- PicoMIPS
--- File: CacheD.vhd
 -- Author: Douglas Ramos
+-- Co-Authors: Pedro Brito, Rafael Higa
 --
 -- Description:
 --     Cache de dados
@@ -30,14 +30,14 @@ entity CacheD is
 		set_valid:       out std_logic_vector(1 downto 0) := "00";
 		
 		-- I/O relacionados ao MEM stage
-        cpu_adrr: in  std_logic_vector(15 downto 0);
-		data_in : in  word_type;	
-		data_out: out word_type;
+        cpu_adrr:        in  std_logic_vector(15 downto 0);
+		data_in :        in  word_type;	
+		data_out:        out word_type;
         
 		-- I/O relacionados a Memoria princial
-        mem_block_in:   in  word_vector_type(15 downto 0);
-		mem_addr:       out std_logic_vector(15 downto 0) := (others => '0');
-		mem_block_out:  out word_vector_type(15 downto 0) := (others => word_vector_init)
+        mem_block_in:    in  word_vector_type(15 downto 0);
+		mem_addr:        out std_logic_vector(15 downto 0) := (others => '0');
+		mem_block_out:   out word_vector_type(15 downto 0) := (others => word_vector_init)
         
     );
 end entity CacheD;

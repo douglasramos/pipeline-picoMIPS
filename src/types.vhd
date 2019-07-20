@@ -1,7 +1,7 @@
 -- PCS3412 - Organizacao e Arquitetura de Computadores I
 -- PicoMIPS
--- File: types.vhd
 -- Author: Douglas Ramos
+-- Co-Authors: Pedro Bitro, Rafael Higa
 --
 -- Description:
 --     Define tipos comuns utilizados no proejto
