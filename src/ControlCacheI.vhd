@@ -20,11 +20,10 @@ entity ControlCacheI is
         access_time: in time := 5 ns
     );
     port (
-	
-		clk:    in std_logic;		
-
+			
 		-- I/O relacionados ao stage IF
-        stall: out std_logic := '0';
+		clk:    in std_logic;
+        stall:  out std_logic := '0';
 		pc:     in word_type;
 		
 		-- I/O relacionados ao cache
@@ -114,9 +113,9 @@ begin
 	mem_rw <= '0'; -- sempre leitra
 	
 	-- stall -- trava pipeline
-	stall <= '1' after access_time when state = MISS or 
-										state = MEM  or 
-										state = CTAG else '0';  
+	stall <= '1' after access_time when state = MISS  or 
+										state = MEM   or 
+										state = CTAG2 else '0';  
 	         
 	-- compare_tag
 	write_options <= '1' when state = MEM else '0';
