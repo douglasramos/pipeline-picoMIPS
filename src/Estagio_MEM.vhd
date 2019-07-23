@@ -45,7 +45,6 @@ component CacheD is
 		update_info:     in  std_logic;
 		hit:             out std_logic := '0';
 		dirty_bit:       out std_logic := '0';
-		set_valid:       out std_logic_vector(1 downto 0) := "00";
 		
 		-- I/O relacionados ao MEM stage
         cpu_adrr: in  std_logic_vector(15 downto 0);
@@ -76,7 +75,6 @@ component ControlCacheD is
 		
 		-- I/O relacionados ao cache
 		dirty_bit:     in  std_logic;
-		set_valid:     in  std_logic_vector(1 downto 0);
 		hit_signal:    in  std_logic;
 		write_options: out std_logic_vector(1 downto 0) := "00";
 		update_info:   out std_logic := '0';
@@ -95,7 +93,6 @@ signal i_mem_write: std_logic;
 signal i_hit: std_logic;
 signal i_update_info: std_logic;
 signal i_dirty_bit: std_logic;
-signal i_set_valid: std_logic_vector(1 downto 0);
 
 --- sinais de memoria (deveriam vir de fora)
 signal i_mem_ready: std_logic;
@@ -110,10 +107,10 @@ signal i_mem_block_out: word_vector_type(15 downto 0);
 begin			
 	
 cache: cacheD generic map (0 ns) 
-			  port map (i_write_options, i_mem_write, i_update_info, i_hit, i_dirty_bit, i_set_valid, address, 
+			  port map (i_write_options, i_mem_write, i_update_info, i_hit, i_dirty_bit, address, 
 			            data_in, data_out, i_mem_block_in, i_mem_addr, i_mem_block_out );
 			  
 cacheControl: ControlCacheD	generic map (0 ns) 
-                            port map (clk_cache, clk, cpu_write, address, stall, i_dirty_bit, i_set_valid, i_hit, 
+                            port map (clk_cache, clk, cpu_write, address, stall, i_dirty_bit, i_hit, 
                                       i_write_options, i_update_info, i_mem_ready, i_mem_rw, i_mem_enable);
 end Estagio_MEM;

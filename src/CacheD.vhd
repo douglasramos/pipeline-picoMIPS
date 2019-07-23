@@ -27,7 +27,6 @@ entity CacheD is
 		update_info:     in  std_logic;
 		hit:             out std_logic := '0';
 		dirty_bit:       out std_logic := '0';
-		set_valid:       out std_logic_vector(1 downto 0) := "00";
 		
 		-- I/O relacionados ao MEM stage
         cpu_adrr:        in  std_logic_vector(15 downto 0);
@@ -122,8 +121,6 @@ begin
 	mem_addr <= cpu_adrr;
 	
 	dirty_bit <= cache(index).set(set_index).dirty;
-	
-	set_valid <= cache(index).set(0).valid & cache(index).set(1).valid;
 	
 	mem_block_out <= cache(index).set(set_index).data;
 	

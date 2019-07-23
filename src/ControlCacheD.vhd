@@ -31,7 +31,6 @@ entity ControlCacheD is
 		
 		-- I/O relacionados ao cache
 		dirty_bit:      in  std_logic;
-		set_valid:      in  std_logic_vector(1 downto 0);
 		hit_signal:     in  std_logic;
 		write_options:  out std_logic_vector(1 downto 0) := "00";
 		update_info:    out std_logic := '0';
