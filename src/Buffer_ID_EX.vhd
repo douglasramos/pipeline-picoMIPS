@@ -25,8 +25,8 @@ entity Buffer_ID_EX is
 	   mux1cOut, mux2cOut : out std_logic;
 	   
 	   -- controle dos estagios seguintes --
-	   MemReadIn, MemWriteIn, MemtoregIn : in std_logic;
-	   MemReadOut, MemWriteOut, MemtoregOut : out std_logic
+	   MemReadIn, MemWriteIn, MemtoregIn, RegwriteIn : in std_logic;
+	   MemReadOut, MemWriteOut, MemtoregOut, RegwriteOut : out std_logic
 	   
   );
 end Buffer_ID_EX;
@@ -36,7 +36,7 @@ architecture Buffer_ID_EX of Buffer_ID_EX is
 signal PC, regData1, regData2, endDesvio: std_logic_vector(31 downto 0);
 signal rs, rt, rd : std_logic_vector(4 downto 0);
 signal ULAc : std_logic_vector(3 downto 0);
-signal mux1c, mux2c, MemRead, MemWrite, Memtoreg : std_logic;
+signal mux1c, mux2c, MemRead, MemWrite, Memtoreg, Regwrite : std_logic;
 
 begin
 
@@ -59,6 +59,7 @@ begin
 		MemRead <= '0';
 		MemWrite <= '0';
 		Memtoreg <= '0';
+		Regwrite <= '0';
 		
 	elsif (clk'event and clk='1' and BufferOff = '0') then  -- Clock na borda de subida
 		PC <= PCin;
@@ -76,6 +77,7 @@ begin
 		MemRead <= MemReadIn;
 		MemWrite <= MemWriteIn;
 		Memtoreg <= MemtoregIn;
+		Regwrite <= RegwriteIn;
 	end if;
 end process;
 
@@ -94,5 +96,6 @@ mux2cOut <= mux2c;
 MemReadOut <= MemRead;
 MemWriteOut <= MemWrite;
 MemtoregOut <= Memtoreg;
+RegwriteOut <= Regwrite;
 
 end Buffer_ID_EX;

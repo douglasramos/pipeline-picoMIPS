@@ -40,11 +40,11 @@ component Estagio_ID is
        clk, reset : in std_logic;
        instruct : in std_logic_vector(31 downto 0);
        writeData : in std_logic_vector(31 downto 0);
-	   we : in std_logic;
+	   we, ALUSrc : in std_logic;
        endWrite : in std_logic_vector(4 downto 0);
        regData1, regData2 : out std_logic_vector(31 downto 0);
        endDesvio : out std_logic_vector(31 downto 0);
-	   rd, rt, shamt :  out std_logic_vector(4 downto 0);
+	   rs, rd, rt, shamt :  out std_logic_vector(4 downto 0);
 	   op, func : out  std_logic_vector(5 downto 0)
   );
 end component;
@@ -53,11 +53,12 @@ end component;
 component Estagio_EX is
   port(
        clk : in std_logic;
-       regData1, regData2 : in std_logic_vector(31 downto 0);
+       regData1, regData2, resultadoMEM, resultadoWB : in std_logic_vector(31 downto 0);
        endDesvio, PCatualizado : in std_logic_vector(31 downto 0);
 	   rt, rd : in std_logic_vector(4 downto 0);
        ULAc : in std_logic_vector(3 downto 0); 
-	   muxc1, muxc2 : in std_logic;
+	   muxOp1, muxOp2: in std_logic_vector(2 downto 0); 
+	   muxReg : in std_logic;
        resultado : out std_logic_vector(31 downto 0);
        endWrite, PCdesvio : out std_logic_vector(31 downto 0);
 	   regWrite:  out std_logic_vector(4 downto 0);
@@ -82,6 +83,12 @@ end component;
 ------------------------------------------------------------------------
 ----------------------- UC Pipeline ------------------------------------
 component controlUnit is
+  generic(
+  	   TpropLogtime : time := 0.25 ns;  						  --Tempo de propagação de porta lógica
+  	   Tprop    	: time := 1 ns;							  --Parametros de reg/flipflop
+	   Tsetup       : time := 0.25 ns;						  --Parametros de reg/flipflop
+	   Thold        : time := 0.25 ns						  --Parametros de reg/flipflop
+  );
   port(																				
   	   clk               : in std_logic;
   	   instructionOpCode : in std_logic_vector(5 downto 0);   -- Entrada da UC. Analisa qual instrução executada e como proceder com os sinais de controle
@@ -93,7 +100,7 @@ component controlUnit is
 	   MemWrite		     : out std_logic;                     -- Define escrita no cache de dados
 	   MemtoReg          : out std_logic;				   	  -- Sinal para multiplexação no estágio write-back
 	   ALUOp             : out std_logic_vector(2 downto 0);  -- Define qual operação será realizada na ULA. São sinais de controle do módulo de controle da ULA
-	   EXExcInterrupt    : in std_logic_vector(1 downto 0);	  -- Entrada que define o comportamento do mecanismo de interrupções e exceções
+	   EXExcInterrupt    : in  std_logic_vector(1 downto 0);  -- Entrada que define o comportamento do mecanismo de interrupções e exceções
 	   IFFlush			 : out std_logic;					  -- Sinal IF.Flush
 	   IDFlush			 : out std_logic;					  -- Sinal ID.Flush
 	   EXFlush           : out std_logic;				      -- Sinal EX.Flush
@@ -135,10 +142,16 @@ end component;
 ------------------------------------------------------------------------
 ----------------------- Hazard Unit ------------------------------------
 component hazardUnit is
+generic(
+  	   TpropLogtime : time := 0.25 ns;  						
+  	   Tprop    	: time := 1 ns;							  
+	   Tsetup       : time := 0.25 ns;						  
+	   Thold        : time := 0.25 ns						  
+);
 port(
 	clk            : in  std_logic;						  -- o mesmo clock do pipeline
 	opcode         : in  std_logic_vector(5 downto 0);	  -- opcode lido no estágio ID
-	equality       : in  std_logic;                       -- resultado da comparação de igualdade na ULA
+	equality       : in  std_logic;                       -- resultado da comparação de igualdade na ULA. Vem do estágio EX
 	IDEXMemRead    : in  std_logic;
 	IDEXRt	       : in  std_logic_vector(4 downto 0);
 	IFIDRs	       : in  std_logic_vector(4 downto 0);
@@ -182,8 +195,8 @@ component Buffer_ID_EX is
 	   mux1cOut, mux2cOut : out std_logic;
 	   
 	   -- controle dos estagios seguintes --
-	   MemReadIn, MemWriteIn, MemtoregIn : in std_logic;
-	   MemReadOut, MemWriteOut, MemtoregOut : out std_logic
+	   MemReadIn, MemWriteIn, MemtoregIn, RegwriteIn : in std_logic;
+	   MemReadOut, MemWriteOut, MemtoregOut, RegwriteOut : out std_logic
 	   
   );
 end component;
@@ -194,10 +207,10 @@ component Buffer_EX_MEM is
   	   clk, BufferOff : in std_logic;
        resultadoIn, endWriteIn, PCdesvioIn : in std_logic_vector(31 downto 0);
 	   regWriteIn :	in std_logic_vector(4 downto 0);
-	   MemReadIn, MemWriteIn, MemtoregIn : in std_logic;
+	   MemReadIn, MemWriteIn, MemtoregIn, RegwriteENin : in std_logic;
 	   resultadoOut, endWriteOut, PCdesvioOut : out std_logic_vector(31 downto 0);
 	   regWriteOut : out std_logic_vector(4 downto 0);
-	   MemReadOut, MemWriteOut, MemtoregOut : out std_logic
+	   MemReadOut, MemWriteOut, MemtoregOut, RegwriteENout : out std_logic
 	   
   );
 end component;
@@ -207,15 +220,18 @@ component Buffer_MEM_WB is
   port(
   	   clk, BufferOff : in std_logic;
        ReadDataIn, resultadoIn : in std_logic_vector(31 downto 0);
-	   MemtoregIn :	in std_logic;
+	   regWriteIn :	in std_logic_vector(4 downto 0);
+	   MemtoregIn, RegwriteENin :	in std_logic;
 	   ReadDataOut, resultadoOut : out std_logic_vector(31 downto 0);
-	   MemtoregOut : out std_logic
+	   regWriteOut : out std_logic_vector(4 downto 0);
+	   MemtoregOut, RegwriteENout : out std_logic
 	   
   );
 end component;
 ------------------------------------------------------------------------
 
-
+-- entradas do estagio IF
+	
 
 
 

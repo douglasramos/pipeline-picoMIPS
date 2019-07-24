@@ -17,19 +17,19 @@ entity Estagio_ID is
        clk, reset : in std_logic;
        instruct : in std_logic_vector(31 downto 0);
        writeData : in std_logic_vector(31 downto 0);
-	   we : in std_logic;
+	   we, ALUSrc : in std_logic;
        endWrite : in std_logic_vector(4 downto 0);
        regData1, regData2 : out std_logic_vector(31 downto 0);
        endDesvio : out std_logic_vector(31 downto 0);
-	   rd, rt, shamt :  out std_logic_vector(4 downto 0);
+	   rs, rd, rt, shamt :  out std_logic_vector(4 downto 0);
 	   op, func : out  std_logic_vector(5 downto 0)
   );
 end Estagio_ID;
 
 architecture Estagio_ID of Estagio_ID is  
 
-signal rs, enda, endb: std_logic_vector(4 downto 0);
---signal op : std_logic_vector(5 downto 0);
+signal enda, endb: std_logic_vector(4 downto 0);
+signal register2 : std_logic_vector(31 downto 0);
 
 ----------------- Register File -------------------------
 component RegisterFile is
@@ -55,7 +55,7 @@ end component;
 begin
 
 banco: RegisterFile generic map (5, 32, 0 ns, 0 ns)
-	   port map (clk, reset, we, writeData, endWrite, enda, endb, regData1, regData2);
+	   port map (clk, reset, we, writeData, endWrite, enda, endb, regData1, register2);
 
 enda <= instruct(25 downto 21);
 endb <= instruct(20 downto 16);	   
@@ -68,7 +68,9 @@ op <= instruct(31 downto 26);		--op code
 endDesvio <= "0000000000000000" & instruct(15 downto 0);	--endereço de desvio
 
 shamt <= instruct(10 downto 6);
-func <= instruct(5 downto 0);
+func <= instruct(5 downto 0); 
+
+regData2 <= register2 when ALUSrc = '0' else "0000000000000000" & instruct(15 downto 0);
 
 
 end Estagio_ID;	
