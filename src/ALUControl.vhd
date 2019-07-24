@@ -7,7 +7,7 @@ entity ALUControl is
   		ALUOp      : in std_logic_vector(2 downto 0);
   		FunctField : in std_logic_vector(5 downto 0);
 		ULASet     : out std_logic_vector(3 downto 0);
-		MulBit     : out std_logic
+		CoproBit   : out std_logic
   );
 end ALUControl;
 
@@ -21,33 +21,35 @@ process (ALUOp,functField)
 begin
 	if ALUOp = "010" then	
 		case functField is
-			when "100000" => ULASet <= "0001";
-							 MulBit <= '0';
-			when "101010" => ULASet <= "0111";
-							 MulBit <= '0';
-			when "001000" => ULASet <= "0000";
-							 MulBit <= '0';
-			when "100001" => ULASet <= "1001";
-							 MulBit <= '0';
-			when "000000" => ULASet <= "1000";
-							 MulBit <= '0';
-			when "110001" => ULASet <= "0000";
-							 MulBit <= '1';
-			when others   => ULASet <= "0000";
-							 MulBit <= '0';
+			when "100000" => ULASet   <= "0001";
+							 CoproBit <= '0';
+			when "101010" => ULASet   <= "0111";
+							 CoproBit <= '0';
+			when "001000" => ULASet   <= "0000";
+							 CoproBit <= '0';
+			when "100001" => ULASet   <= "1001";
+							 CoproBit <= '0';
+			when "000000" => ULASet   <= "1000";
+							 CoproBit <= '0';
+			when "110001" => ULASet   <= "0000";
+							 CoproBit <= '1';
+			when "110011" => ULASet   <= "0000";
+							 CoproBit <= '1';
+			when others   => ULASet   <= "0000";
+							 CoproBit <= '0';
 		end case;
 	else
 		case ALUOp is
-			when "000" => ULASet <= "0000";
-						  MulBit <= '0';
-			when "001" => ULASet <= "0110";
-						  MulBit <= '0';
-			when "011" => ULASet <= "0111";
-						  MulBit <= '0';
-			when "100" => ULASet <= "0001";
-						  MulBit <= '0';
-			when others   => ULASet <= "0000";
-							 MulBit <= '0';
+			when "000" => ULASet      <= "0000";
+						  CoproBit    <= '0';
+			when "001" => ULASet      <= "0110";
+						  CoproBit    <= '0';
+			when "011" => ULASet      <= "0111";
+						  CoproBit    <= '0';
+			when "100" => ULASet 	  <= "0001";
+						  CoproBit    <= '0';
+			when others   => ULASet   <= "0000";
+							 CoproBit <= '0';
 			
 		end case;
 	end if;
