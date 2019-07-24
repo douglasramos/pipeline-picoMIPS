@@ -193,8 +193,8 @@ begin
 	
 case PS is
 	when s0=>
-		Q0 <= '0' after  Tprop + Thold;
-		Q1 <= '0' after  Tprop + Thold;
+		Q0 <= '0' after  Tprop;
+		Q1 <= '0' after  Tprop;
 		if (EXExcInterrupt = "01") then
 			NS <= s1;
 			state <= "01";
@@ -209,8 +209,8 @@ case PS is
 	when s1=> 		
 		state <= "01";				
 		NS <= s1;      														  --necessidade de iSmplementar dps algo com reset aqui???
-		Q0 <= D0 after Tprop + Thold;
-		Q1 <= D1 after Tprop + Thold;
+		Q0 <= D0 after Tprop;
+		Q1 <= D1 after Tprop;
 						
 	when s2=>		 
 						
@@ -221,8 +221,8 @@ case PS is
 		end if;	
 		
 		state <= "10";
-		Q0 <= D0 after Tprop + Thold;
-		Q1 <= D1 after Tprop + Thold;
+		Q0 <= D0 after Tprop;
+		Q1 <= D1 after Tprop;
 	end case;	
 				
 end process comb_proc;

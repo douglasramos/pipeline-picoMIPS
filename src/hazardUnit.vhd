@@ -54,12 +54,12 @@ sync_proc: process (clk,NS)
 	
 		if (state = "00" and rising_edge(clk)) then 
 			PS <= s0;
-			Q1 <= '0' after Tprop + Thold;
-			Q0 <= '0' after Tprop + Thold;
+			Q1 <= '0' after Tprop;
+			Q0 <= '0' after Tprop;
 		elsif (rising_edge(clk)) then
 			PS <= NS;
-			Q1 <= D1 after Tprop + Thold;
-			Q0 <= D0 after Tprop + Thold;
+			Q1 <= D1 after Tprop;
+			Q0 <= D0 after Tprop;
 		end if;	 
 	
 end process sync_proc;
