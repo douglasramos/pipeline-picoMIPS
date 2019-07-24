@@ -221,8 +221,8 @@ case PS is
 		end if;	
 		
 		state <= "10";
-		Q0 <= D0 after Tprop;
-		Q1 <= D1 after Tprop;
+		Q0 <= D0 after Tprop + Tsetup + Thold;
+		Q1 <= D1 after Tprop + Tsetup + Thold;
 	end case;	
 				
 end process comb_proc;
