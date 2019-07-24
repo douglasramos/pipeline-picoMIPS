@@ -68,7 +68,7 @@ end process sync_proc;
 comb_proc: process (PS, isBranch,equality)
 	begin
 	
-	case PS is
+	case PS is			
 		when s0=>
 			if (isBranch = "01") then
 				NS <= s1;
@@ -80,7 +80,7 @@ comb_proc: process (PS, isBranch,equality)
 				NS <= s0;
 				state <= "00";
 			end if;
-		
+			
 		when s1=> 		
 			if (equality = '1') then										
 				NS <= s3;
@@ -89,8 +89,8 @@ comb_proc: process (PS, isBranch,equality)
 			end if;	
 	
 			state <= "01";				     														
-						
-		when s2=>		 						
+			
+		when s2=>		 		
 			if (equality = '0') then										
 				NS <= s3;
 			else
@@ -98,11 +98,11 @@ comb_proc: process (PS, isBranch,equality)
 			end if;	
 		
 			state <= "10";
-
-		when s3=>
+			
+		when s3=>				 
 			state <= "11";
 			NS <= s0;
-		
+			
 		end case;	
 				
 end process comb_proc;
@@ -135,8 +135,8 @@ end process comb_proc;
 	IFFlush <= Q1 and Q0 after TpropLogtime;
 	IDFlush <= Q1 and Q0 after TpropLogtime;
 	
-	D1 <= ((not Q1) and (not Q0) and isBranch(1) and (not isBranch(0))) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 2 * TpropLogtime;
-	D0 <= ((not Q1) and (not Q0) and (not isBranch(1)) and isBranch(0)) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 2 * TpropLogtime;
+	D1 <= ((not Q1) and (not Q0) and isBranch(1) and (not isBranch(0))) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 2 * TpropLogTime;
+	D0 <= ((not Q1) and (not Q0) and (not isBranch(1)) and isBranch(0)) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 2 * TpropLogTime;
 	
 	
 end hazardUnit;
