@@ -5,6 +5,12 @@ use ieee.numeric_std.all;
 library biblioteca_de_componentes;
 
 entity controlUnit is
+  generic(
+  	   TpropLogtime : time := 0.25 ns;  						  --Tempo de propagação de porta lógica
+  	   Tprop    	: time := 1 ns;							  --Parametros de reg/flipflop
+	   Tsetup       : time := 0.25 ns;						  --Parametros de reg/flipflop
+	   Thold        : time := 0.25 ns						  --Parametros de reg/flipflop
+  );
   port(																				
   	   clk               : in std_logic;
   	   instructionOpCode : in std_logic_vector(5 downto 0);   -- Entrada da UC. Analisa qual instrução executada e como proceder com os sinais de controle
@@ -16,7 +22,7 @@ entity controlUnit is
 	   MemWrite		     : out std_logic;                     -- Define escrita no cache de dados
 	   MemtoReg          : out std_logic;				   	  -- Sinal para multiplexação no estágio write-back
 	   ALUOp             : out std_logic_vector(2 downto 0);  -- Define qual operação será realizada na ULA. São sinais de controle do módulo de controle da ULA
-	   EXExcInterrupt    : in std_logic_vector(1 downto 0);	  -- Entrada que define o comportamento do mecanismo de interrupções e exceções
+	   EXExcInterrupt    : in  std_logic_vector(1 downto 0);  -- Entrada que define o comportamento do mecanismo de interrupções e exceções
 	   IFFlush			 : out std_logic;					  -- Sinal IF.Flush
 	   IDFlush			 : out std_logic;					  -- Sinal ID.Flush
 	   EXFlush           : out std_logic;				      -- Sinal EX.Flush
@@ -28,39 +34,41 @@ end controlUnit;
 
 architecture controlUnit of controlUnit is
 
+---------------------------------------------------------------------------------------
 --Multiplexador 8x1
+---------------------------------------------------------------------------------------
 component Mux8x1 is
 	generic(
-       NB : integer := 5;
-       Tsel : time := 3 ns;
-       Tdata : time := 2 ns
+       NB    : integer := 5;
+       Tsel  : time    := 3 ns;
+       Tdata : time    := 2 ns
   	);
   	port(
-       I0 : in std_logic_vector(NB - 1 downto 0);
-       I1 : in std_logic_vector(NB - 1 downto 0);
-       I2 : in std_logic_vector(NB - 1 downto 0);
-       I3 : in std_logic_vector(NB - 1 downto 0);
-       I4 : in std_logic_vector(NB - 1 downto 0);
-       I5 : in std_logic_vector(NB - 1 downto 0);
-       I6 : in std_logic_vector(NB - 1 downto 0);
-       I7 : in std_logic_vector(NB - 1 downto 0);
-       Sel : in std_logic_vector(2 downto 0);
-       O : out std_logic_vector(NB - 1 downto 0)
+       I0  : in  std_logic_vector(NB - 1 downto 0);
+       I1  : in  std_logic_vector(NB - 1 downto 0);
+       I2  : in  std_logic_vector(NB - 1 downto 0);
+       I3  : in  std_logic_vector(NB - 1 downto 0);
+       I4  : in  std_logic_vector(NB - 1 downto 0);
+       I5  : in  std_logic_vector(NB - 1 downto 0);
+       I6  : in  std_logic_vector(NB - 1 downto 0);
+       I7  : in  std_logic_vector(NB - 1 downto 0);
+       Sel : in  std_logic_vector(2 downto 0);
+       O   : out std_logic_vector(NB - 1 downto 0)
   	);
 end component;
 	
 type state_type is (s0, s1, s2);
 signal PS, NS : state_type;
 
-signal D1 : std_logic;
-signal D0 : std_logic;
-signal X1 : std_logic;
-signal X0 : std_logic;
-signal Q1 : std_logic;
-signal Q0 : std_logic;	   
+signal D1      : std_logic;
+signal D0      : std_logic;
+signal X1      : std_logic;
+signal X0      : std_logic;
+signal Q1      : std_logic;
+signal Q0      : std_logic;	   
 signal isCause : std_logic;
-signal muxSel : std_logic_vector(2 downto 0); 
-signal state : std_logic_vector(1 downto 0);
+signal muxSel  : std_logic_vector(2 downto 0); 
+signal state   : std_logic_vector(1 downto 0);
 
 begin
 
@@ -185,8 +193,8 @@ begin
 	
 case PS is
 	when s0=>
-		Q0 <= '0';
-		Q1 <= '0';
+		Q0 <= '0' after Tprop;
+		Q1 <= '0' after Tprop;
 		if (EXExcInterrupt = "01") then
 			NS <= s1;
 			state <= "01";
@@ -201,8 +209,8 @@ case PS is
 	when s1=> 		
 		state <= "01";				
 		NS <= s1;      														  --necessidade de implementar dps algo com reset aqui???
-		Q0 <= D0;
-		Q1 <= D1;
+		Q0 <= D0 after Tprop;
+		Q1 <= D1 after Tprop;
 						
 	when s2=>		 
 						
@@ -213,23 +221,23 @@ case PS is
 		end if;	
 		
 		state <= "10";
-		Q0 <= D0;
-		Q1 <= D1;
+		Q0 <= D0 after Tprop;
+		Q1 <= D1 after Tprop;
 	end case;	
 				
 end process comb_proc;
 
 
 
-D1 <= ((not Q1) and (not Q0) and X1 and (not X0)) or (Q1 and (not Q0));
-D0 <= ((not Q1) and (not Q0) and (not X1) and X0) or ((not Q1) and Q0);
+D1 <= ((not Q1) and (not Q0) and X1 and (not X0)) or (Q1 and (not Q0)) after 3*TpropLogTime;
+D0 <= ((not Q1) and (not Q0) and (not X1) and X0) or ((not Q1) and Q0) after 3*TpropLogTime;
 
-IFFlush <= (not Q1) and Q0;
-IDFlush <= (not Q1) and Q0;
-EXFlush <= (not Q1) and Q0;
+IFFlush <= (not Q1) and Q0 after TpropLogtime;
+IDFlush <= (not Q1) and Q0 after TpropLogtime;
+EXFlush <= (not Q1) and Q0 after TpropLogtime;
 
-BufferOff <= Q1 and (not Q0);
-isCause <= ((not Q1) and Q0) or (Q1 and (not Q0));
+BufferOff <= Q1 and (not Q0) after TpropLogtime;
+isCause <= ((not Q1) and Q0) or (Q1 and (not Q0)) after TpropLogtime;
 EPCWriteEnable <= isCause;
 
 X1 <= EXExcInterrupt(1);
@@ -239,7 +247,7 @@ muxSel(2) <= X1;
 muxSel(1) <= X0;
 muxSel(0) <= isCause; 
 
-Mux : Mux8x1 port map ("00000", "00000", "00000", "01100", "00000", "01010", "00000", "00000", muxSel, causeValue);
+Mux : Mux8x1 generic map(5, 0.5 ns, 0.25 ns) port map ("00000", "00000", "00000", "01100", "00000", "01010", "00000", "00000", muxSel, causeValue);
 
 
 end controlUnit;

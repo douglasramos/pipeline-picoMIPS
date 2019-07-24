@@ -4,10 +4,16 @@ use IEEE.numeric_std.all;
 use IEEE.std_logic_unsigned.all;
 
 entity hazardUnit is
+generic(
+  	   TpropLogtime : time := 0.25 ns;  						
+  	   Tprop    	: time := 1 ns;							  
+	   Tsetup       : time := 0.25 ns;						  
+	   Thold        : time := 0.25 ns						  
+);
 port(
 	clk            : in  std_logic;						  -- o mesmo clock do pipeline
 	opcode         : in  std_logic_vector(5 downto 0);	  -- opcode lido no estágio ID
-	equality       : in  std_logic;                       -- resultado da comparação de igualdade na ULA
+	equality       : in  std_logic;                       -- resultado da comparação de igualdade na ULA. Vem do estágio EX
 	IDEXMemRead    : in  std_logic;
 	IDEXRt	       : in  std_logic_vector(4 downto 0);
 	IFIDRs	       : in  std_logic_vector(4 downto 0);
@@ -43,7 +49,7 @@ signal branchDetector : std_logic;
 
 begin		   
 
-	sync_proc: process (clk,NS)
+sync_proc: process (clk,NS)
 	begin	
 	
 		if (state = "00" and rising_edge(clk)) then 
@@ -52,8 +58,8 @@ begin
 			Q0 <= '0';
 		elsif (rising_edge(clk)) then
 			PS <= NS;
-			Q1 <= D1;
-			Q0 <= D0;
+			Q1 <= D1 after Tprop;
+			Q0 <= D0 after Tprop;
 		end if;	 
 	
 end process sync_proc;
@@ -126,11 +132,11 @@ end process comb_proc;
 	isBranch(1) <= branchDetector and opcode(0);
 	isBranch(0) <= branchDetector and (not opcode(0));
 	
-	IFFlush <= Q1 and Q0;
-	IDFlush <= Q1 and Q0;
+	IFFlush <= Q1 and Q0 after TpropLogtime;
+	IDFlush <= Q1 and Q0 after TpropLogtime;
 	
-	D1 <= ((not Q1) and (not Q0) and isBranch(1) and (not isBranch(0))) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality));
-	D0 <= ((not Q1) and (not Q0) and (not isBranch(1)) and isBranch(0)) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality));
+	D1 <= ((not Q1) and (not Q0) and isBranch(1) and (not isBranch(0))) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 4 * TpropLogtime;
+	D0 <= ((not Q1) and (not Q0) and (not isBranch(1)) and isBranch(0)) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 4 * TpropLogtime;
 	
 	
 end hazardUnit;
