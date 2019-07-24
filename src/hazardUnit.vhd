@@ -54,12 +54,12 @@ sync_proc: process (clk,NS)
 	
 		if (state = "00" and rising_edge(clk)) then 
 			PS <= s0;
-			Q1 <= '0';
-			Q0 <= '0';
+			Q1 <= '0' after Tprop + Thold;
+			Q0 <= '0' after Tprop + Thold;
 		elsif (rising_edge(clk)) then
 			PS <= NS;
-			Q1 <= D1 after Tprop;
-			Q0 <= D0 after Tprop;
+			Q1 <= D1 after Tprop + Thold;
+			Q0 <= D0 after Tprop + Thold;
 		end if;	 
 	
 end process sync_proc;
@@ -135,8 +135,8 @@ end process comb_proc;
 	IFFlush <= Q1 and Q0 after TpropLogtime;
 	IDFlush <= Q1 and Q0 after TpropLogtime;
 	
-	D1 <= ((not Q1) and (not Q0) and isBranch(1) and (not isBranch(0))) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 4 * TpropLogtime;
-	D0 <= ((not Q1) and (not Q0) and (not isBranch(1)) and isBranch(0)) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 4 * TpropLogtime;
+	D1 <= ((not Q1) and (not Q0) and isBranch(1) and (not isBranch(0))) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 2 * TpropLogtime;
+	D0 <= ((not Q1) and (not Q0) and (not isBranch(1)) and isBranch(0)) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 2 * TpropLogtime;
 	
 	
 end hazardUnit;
