@@ -108,7 +108,7 @@ begin
 		
 		when "000100" => RegDst   <= '0';     --beq
 						 Regwrite <= '0';
-						 ALUSrc   <= '0';
+						 ALUSrc   <= '1';
 						 PCSrc    <= '1';
 						 MemRead  <= '0';
 						 MemWrite <= '0'; 
@@ -117,7 +117,7 @@ begin
 		
 		when "000101" => RegDst   <= '0';     --bne
 						 Regwrite <= '0';
-						 ALUSrc   <= '0';
+						 ALUSrc   <= '1';
 						 PCSrc    <= '1';
 						 MemRead  <= '0';
 						 MemWrite <= '0'; 
@@ -126,7 +126,7 @@ begin
 		
 		when "001000" => RegDst   <= '0';     --addi
 						 Regwrite <= '0';
-						 ALUSrc   <= '0';
+						 ALUSrc   <= '1';
 						 PCSrc    <= '0';
 						 MemRead  <= '0';
 						 MemWrite <= '0'; 
@@ -135,7 +135,7 @@ begin
 		
 		when "001010" => RegDst   <= '0';     --slti
 						 Regwrite <= '0';
-						 ALUSrc   <= '0';
+						 ALUSrc   <= '1';
 						 PCSrc    <= '0';
 						 MemRead  <= '0';
 						 MemWrite <= '0'; 
