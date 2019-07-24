@@ -15,11 +15,12 @@ library biblioteca_de_componentes;
 entity Estagio_EX is
   port(
        clk : in std_logic;
-       regData1, regData2 : in std_logic_vector(31 downto 0);
+       regData1, regData2, resultadoMEM, resultadoWB : in std_logic_vector(31 downto 0);
        endDesvio, PCatualizado : in std_logic_vector(31 downto 0);
 	   rt, rd : in std_logic_vector(4 downto 0);
        ULAc : in std_logic_vector(3 downto 0); 
-	   muxc1, muxc2 : in std_logic;
+	   muxOp1, muxOp2: in std_logic_vector(2 downto 0); 
+	   muxReg : in std_logic;
        resultado : out std_logic_vector(31 downto 0);
        endWrite, PCdesvio : out std_logic_vector(31 downto 0);
 	   regWrite:  out std_logic_vector(4 downto 0);
@@ -30,8 +31,8 @@ end Estagio_EX;
 architecture Estagio_EX of Estagio_EX is 
 
 signal sinal: std_logic;
-signal endDesvioX4, outMux1: std_logic_vector(31 downto 0);
-signal outMux2: std_logic_vector(4 downto 0);
+signal endDesvioX4, outMux1, outMux2: std_logic_vector(31 downto 0);
+signal outMuxReg: std_logic_vector(4 downto 0);
 -------------------- ULA -------------------------------
 component ULAmodified is
   generic(
@@ -102,10 +103,19 @@ end component;
 begin
 
 ula: ULAmodified generic map (32, 0 ns, 0 ns, 0 ns, 0ns) 
-     port map ('0', regData1, outMux1, ULAc, sinal, vaum, zero, resultado);
+     port map ('0', outMux1, outMux2, ULAc, sinal, vaum, zero, resultado);
 
-mux1: multiplexador generic map (32, 0 ns, 0 ns)
-      port map (muxc1, regData2, endDesvio, outMux1);
+with muxOp1 select
+	outMux1 <= regData1 		when "000",
+			   resultadoMEM		when "010",
+			   resultadoWB		when "001",
+			   (others => '0')  when others;
+
+with muxOp2 select
+	outMux2 <= regData2 		when "000",
+			   resultadoMEM		when "010",
+			   resultadoWB		when "001",
+			   (others => '0')  when others;
 
 deslocador: deslocador_combinatorio generic map (32, 2, 0 ns)
 	  port map ('1', endDesvio, endDesvioX4);
@@ -113,10 +123,10 @@ deslocador: deslocador_combinatorio generic map (32, 2, 0 ns)
 soma: Somador generic map (32, 0 ns, 0 ns)
 		 port map ('1', '0', PCatualizado, endDesvioX4, PCdesvio);
 	
-mux2: multiplexador generic map (5, 0 ns, 0 ns)
-	  port map (muxc2, rt, rd, outMux2);
+muxR: multiplexador generic map (5, 0 ns, 0 ns)
+	  port map (muxReg, rt, rd, outMuxReg);
 
-regWrite <= outMux2;
+regWrite <= outMuxReg;
 endWrite <= regData2;
 	 
 
