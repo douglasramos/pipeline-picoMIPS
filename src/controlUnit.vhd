@@ -193,8 +193,8 @@ begin
 	
 case PS is
 	when s0=>
-		Q0 <= '0' after Tprop;
-		Q1 <= '0' after Tprop;
+		Q0 <= '0' after  Tprop + Tsetup + Thold;
+		Q1 <= '0' after  Tprop + Tsetup + Thold;
 		if (EXExcInterrupt = "01") then
 			NS <= s1;
 			state <= "01";
@@ -208,9 +208,9 @@ case PS is
 				
 	when s1=> 		
 		state <= "01";				
-		NS <= s1;      														  --necessidade de implementar dps algo com reset aqui???
-		Q0 <= D0 after Tprop;
-		Q1 <= D1 after Tprop;
+		NS <= s1;      														  --necessidade de iSmplementar dps algo com reset aqui???
+		Q0 <= D0 after Tprop + Tsetup + Thold;
+		Q1 <= D1 after Tprop + Tsetup + Thold;
 						
 	when s2=>		 
 						
