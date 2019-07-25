@@ -9,10 +9,10 @@ entity Buffer_EX_MEM is
   	   clk, BufferOff : in std_logic;
        resultadoIn, endWriteIn, PCdesvioIn : in std_logic_vector(31 downto 0);
 	   regWriteIn :	in std_logic_vector(4 downto 0);
-	   MemReadIn, MemWriteIn, MemtoregIn, RegwriteENin : in std_logic;
+	   MemReadIn, MemWriteIn, MemtoregIn, RegwriteENin, PCSrcIn : in std_logic;
 	   resultadoOut, endWriteOut, PCdesvioOut : out std_logic_vector(31 downto 0);
 	   regWriteOut : out std_logic_vector(4 downto 0);
-	   MemReadOut, MemWriteOut, MemtoregOut, RegwriteENout : out std_logic
+	   MemReadOut, MemWriteOut, MemtoregOut, RegwriteENout, PCSrcOut : out std_logic
 	   
   );
 end Buffer_EX_MEM;
@@ -21,7 +21,7 @@ architecture Buffer_EX_MEM of Buffer_EX_MEM is
 
 signal resultado, endWrite, PCdesvio: std_logic_vector(31 downto 0);
 signal regWrite: std_logic_vector(4 downto 0);
-signal MemRead, MemWrite, Memtoreg, RegwriteEN: std_logic;
+signal MemRead, MemWrite, Memtoreg, RegwriteEN, PCSrc: std_logic;
 
 begin
 
@@ -37,6 +37,7 @@ begin
 		MemWrite <= MemWriteIn;
 		Memtoreg <= MemtoregIn;
 		RegwriteEN <= RegwriteENin;
+		PCSrc <= PCSrcIn;
 	end if;
 end process;
 
@@ -49,6 +50,7 @@ MemReadOut <= MemRead;
 MemWriteOut <= MemWrite;
 MemtoregOut <= Memtoreg;
 RegwriteENout <= RegwriteEN;
+PCSrcOut <= PCSrc;
 
 
 end Buffer_EX_MEM;

@@ -18,15 +18,15 @@ entity Buffer_ID_EX is
 	   rsOut, rtOut, rdOut : out std_logic_vector(4 downto 0);
 	   
 	   -- sinais de controle --
-	   ULAcIn : in std_logic_vector(3 downto 0);
-	   mux1cIn, mux2cIn : in std_logic;
+	   ULAcIn : in std_logic_vector(2 downto 0);
+	   muxRegIn : in std_logic;
 	   
-	   ULAcOut : out std_logic_vector(3 downto 0);
-	   mux1cOut, mux2cOut : out std_logic;
+	   ULAcOut : out std_logic_vector(2 downto 0);
+	   muxRegOut : out std_logic;
 	   
 	   -- controle dos estagios seguintes --
-	   MemReadIn, MemWriteIn, MemtoregIn, RegwriteIn : in std_logic;
-	   MemReadOut, MemWriteOut, MemtoregOut, RegwriteOut : out std_logic
+	   MemReadIn, MemWriteIn, MemtoregIn, RegwriteIn, PCSrcIn : in std_logic;
+	   MemReadOut, MemWriteOut, MemtoregOut, RegwriteOut, PCSrcOut : out std_logic
 	   
   );
 end Buffer_ID_EX;
@@ -35,8 +35,8 @@ architecture Buffer_ID_EX of Buffer_ID_EX is
 
 signal PC, regData1, regData2, endDesvio: std_logic_vector(31 downto 0);
 signal rs, rt, rd : std_logic_vector(4 downto 0);
-signal ULAc : std_logic_vector(3 downto 0);
-signal mux1c, mux2c, MemRead, MemWrite, Memtoreg, Regwrite : std_logic;
+signal ULAc : std_logic_vector(2 downto 0);
+signal muxReg, MemRead, MemWrite, Memtoreg, Regwrite, PCSrc : std_logic;
 
 begin
 
@@ -52,14 +52,14 @@ begin
 		rt <= "00000";
 		rd <= "00000";
 		
-		ULAc <= "0000";
-		mux1c <= '0';
-		mux2c <= '0';
+		ULAc <= "000";
+		muxReg <= '0';
 		
 		MemRead <= '0';
 		MemWrite <= '0';
 		Memtoreg <= '0';
 		Regwrite <= '0';
+		PCSrc <= '0';
 		
 	elsif (clk'event and clk='1' and BufferOff = '0') then  -- Clock na borda de subida
 		PC <= PCin;
@@ -71,13 +71,13 @@ begin
 		rd <= rdIn;
 		
 		ULAc <= ULAcIn;
-		mux1c <= mux1cIn;
-		mux2c <= mux2cIn;
+		muxReg <= muxRegIn;
 		
 		MemRead <= MemReadIn;
 		MemWrite <= MemWriteIn;
 		Memtoreg <= MemtoregIn;
 		Regwrite <= RegwriteIn;
+		PCSrc <= PCSrcIn;
 	end if;
 end process;
 
@@ -90,12 +90,12 @@ rtOut <= rt;
 rdOut <= rd;
 
 ULAcOut <= ULAc;
-mux1cOut <= mux1c;
-mux2cOut <= mux2c;
+muxRegOut <= muxReg;
 
 MemReadOut <= MemRead;
 MemWriteOut <= MemWrite;
 MemtoregOut <= Memtoreg;
 RegwriteOut <= Regwrite;
+PCSrcOut <= PCSrc;
 
 end Buffer_ID_EX;
