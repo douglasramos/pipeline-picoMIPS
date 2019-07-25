@@ -1,11 +1,3 @@
--- PCS3412 - Organizacao e Arquitetura de Computadores I
--- PicoMIPS
--- Author: Rafael Higa 
--- Co-Authors: Pedro Brito, Douglas Ramos 
---
--- Description:
---     ULA modificada 
-
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -15,8 +7,8 @@ library biblioteca_de_componentes;
 entity ULAmodified is
   generic(
        NB 		: integer := 32;
-       Tsom 	: time := 1 ns;   --tava 5, mudei pra 1!
-       Tsub 	: time := 5 ns;
+       Tsom 	: time := 1 ns;
+       Tsub 	: time := 1.25 ns;
        Ttrans 	: time := 5 ns;
        Tgate 	: time := 1 ns
   );
@@ -25,9 +17,9 @@ entity ULAmodified is
        A 		: in 	std_logic_vector(NB - 1 downto 0);	--operando
        B 		: in 	std_logic_vector(NB - 1 downto 0);	--operando
        cUla 	: in 	std_logic_vector(3 downto 0);		--controle: qual operação realizar
-       Sinal 	: out 	std_logic;							--???
+       Sinal 	: out 	std_logic;							
        Vaum 	: out 	std_logic;							--vai um
-       Zero 	: out 	std_logic;							--???
+       Zero 	: out 	std_logic;							
        C 		: out 	std_logic_vector(NB - 1 downto 0);	--resultado da operação
 	   enable   : in    std_logic
   );
