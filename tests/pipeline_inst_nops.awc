@@ -1,0 +1,72 @@
+<config>
+    <version>
+        2.1
+    </version>
+    <comment>
+    </comment>
+    <databases>
+        <database id="">*virtual*</database>
+        <database id="dc5360669040e15f3b5da86f221b4a00">pipeline_inst_nops.asdb</database>
+    </databases>
+    <signallists>
+        <signallist id="0">
+        <signal>/pipeline/clk</signal>
+        <signal>/pipeline/clk_cache</signal>
+        <signal>/pipeline/muxc</signal>
+        <signal>/pipeline/reset</signal>
+        <signal>/pipeline/PC</signal>
+        <signal>/pipeline/PC4</signal>
+        <signal>/pipeline/PC4out</signal>
+        <signal>/pipeline/instruct</signal>
+        <signal>/pipeline/op</signal>
+        <signal>/pipeline/rs</signal>
+        <signal>/pipeline/rt</signal>
+        <signal>/pipeline/rd</signal>
+        <signal>/pipeline/endDesvio</signal>
+        <signal>/pipeline/regData1</signal>
+        <signal>/pipeline/regData2</signal>
+        <signal>/pipeline/regData1out</signal>
+        <signal>/pipeline/regData2out</signal>
+        <signal>/pipeline/ForwardA</signal>
+        <signal>/pipeline/ForwardB</signal>
+        <signal>/pipeline/ULAc</signal>
+        <signal>/pipeline/ALUOp</signal>
+        <signal>/pipeline/ALUOpOut</signal>
+        <signal>/pipeline/muxReg</signal>
+        <signal>/pipeline/resultado</signal>
+        <signal>/pipeline/regWrite</signal>
+        <signal>/pipeline/BufferOff</signal>
+        <signal>/pipeline/ALUSrc</signal>
+        <signal>/pipeline/address</signal>
+        <signal>/pipeline/data_in</signal>
+        <signal>/pipeline/data_out</signal>
+        <signal>/pipeline/endWrite_WB</signal>
+        <signal>/pipeline/writeData</signal>
+        <signal>/pipeline/Memtoreg_WB</signal>
+        </signallist>
+    </signallists>
+    <prefbases>
+        <prefbase id="0" >
+            <pref name="End Time" value="61184" />
+            <pref name="Start Time" value="0" />
+        </prefbase>
+    </prefbases>
+    <bookmarkbases>
+        <bookmarks id="0">
+        </bookmarks>
+    </bookmarkbases>
+    <cursorbases>
+        <cursors id="0">
+            <cursor value="100000" label="Cursor 1" locked="0" />
+        </cursors>
+    </cursorbases>
+    <measurementbases>
+    </measurementbases>
+    <commentbases>
+        <comments id="0">
+        </comments>
+    </commentbases>
+    <views>
+        <view signallist="0" propertybase="0" prefbase="0" type="1" bookmarks="0" cursors="0" measurements="-1" comments="-1" />
+    </views>
+</config>
