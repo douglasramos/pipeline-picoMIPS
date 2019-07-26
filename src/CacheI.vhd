@@ -57,9 +57,24 @@ architecture CacheI_arch of CacheI is
 	constant cache_row_init : cache_row_type := (valid => '0',
 												 tag => (others => '0'),   
 												 data => (others => word_vector_init));
+
 	
+	constant cache_row_instruction : cache_row_type := (valid => '1',
+												 tag => (others => '0'),   
+												 data => (0 => word_vector_instruction1,
+												 		  1 => word_vector_instruction2,
+												 		  others => word_vector_init));
+												 
+	constant cache_row_instruction_nop : cache_row_type := (valid => '1',
+												 tag => (others => '0'),   
+												 data => (0 => word_vector_instruction1,
+												 		  4 => word_vector_instruction2,
+												 		  others => word_vector_init));
+
 	--- definicao do cache												 
-    signal cache: cache_type := (others => cache_row_init);	-- aqui irá em algum index, um valor diferente para row
+    signal cache: cache_type := (64 => 	cache_row_instruction,
+								 128 => cache_row_instruction_nop, 
+								 others => cache_row_init);
 	
 	--- Demais sinais internos
 	signal mem_block_addr: natural;
