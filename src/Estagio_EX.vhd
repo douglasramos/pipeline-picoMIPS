@@ -36,21 +36,22 @@ signal outMuxReg: std_logic_vector(4 downto 0);
 -------------------- ULA -------------------------------
 component ULAmodified is
   generic(
-       NB 		: integer := 8;
-       Tsom 	: time := 5 ns;
-       Tsub 	: time := 5 ns;
+       NB 		: integer := 32;
+       Tsom 	: time := 1 ns;
+       Tsub 	: time := 1.25 ns;
        Ttrans 	: time := 5 ns;
        Tgate 	: time := 1 ns
   );
   port(
-       Veum 	: in 	std_logic;
-       A 		: in 	std_logic_vector(NB - 1 downto 0);
-       B 		: in 	std_logic_vector(NB - 1 downto 0);
-       cUla 	: in 	std_logic_vector(3 downto 0);
-       Sinal 	: out 	std_logic;
-       Vaum 	: out 	std_logic;
-       Zero 	: out 	std_logic;
-       C 		: out 	std_logic_vector(NB - 1 downto 0)
+       Veum 	: in 	std_logic;					  		--vem um
+       A 		: in 	std_logic_vector(NB - 1 downto 0);	--operando
+       B 		: in 	std_logic_vector(NB - 1 downto 0);	--operando
+       cUla 	: in 	std_logic_vector(3 downto 0);		--controle: qual operação realizar
+       Sinal 	: out 	std_logic;							
+       Vaum 	: out 	std_logic;							--vai um
+       Zero 	: out 	std_logic;							
+       C 		: out 	std_logic_vector(NB - 1 downto 0);	--resultado da operação
+	   enable   : in    std_logic
   );
 end component;
 --------------------------------------------------------
@@ -103,7 +104,7 @@ end component;
 begin
 
 ula: ULAmodified generic map (32, 0 ns, 0 ns, 0 ns, 0ns) 
-     port map ('0', outMux1, outMux2, ULAc, sinal, vaum, zero, resultado);
+     port map ('0', outMux1, outMux2, ULAc, sinal, vaum, zero, resultado, '1');
 
 with muxOp1 select
 	outMux1 <= regData1 		when "000",

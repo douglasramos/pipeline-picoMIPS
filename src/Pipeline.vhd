@@ -224,7 +224,7 @@ end component;
 ------------------------------------------------------------------------
 
 -- entradas estagio IF
-	signal PCatualizado, PCdesvioIF : std_logic_vector(31 downto 0);
+	signal PCatualizado, PCdesvioIF, PCtemp : std_logic_vector(31 downto 0);
 	--signal muxc : std_logic;
 	
 	--sinais relacionados ao Cache I
@@ -287,7 +287,7 @@ end component;
 	
 --sinais dos buffers
 	signal IFFlush_HU, IDFlush_HU: std_logic;
-	signal PC4out, instructOut, PCdesvio_EX, resultado_WB, readData: std_logic_vector(31 downto 0);
+	signal PC4out, PC4out_EX, instructOut, PCdesvio_EX, resultado_WB, readData: std_logic_vector(31 downto 0);
 	signal Regwrite_EX, Regwrite_MEM, Regwrite_WB: std_logic;
 	signal endWrite_WB, endWrite_MEM : std_logic_vector(4 downto 0);
 	signal ALUOpOut: std_logic_vector(2 downto 0);
@@ -298,8 +298,10 @@ end component;
 	
 begin
 	
-	Est_IF: Estagio_IF port map (clk, clk_cache, reset, PCatualizado, PC, muxc, instruct, PC4, stall_I, mem_bloco_data, mem_addr);
+	Est_IF: Estagio_IF port map (clk, clk_cache, reset, PC4out, PC, muxc, instruct, PC4, stall_I, mem_bloco_data, mem_addr);
 	--PCSrc -> WB;	PCdesvio -> estagio MEM;	instruct e PC4 vao para o buffer
+	PCtemp <= PC4;
+	PCatualizado <= PCtemp after 0.5 ns;
 	
 	buffer1: Buffer_IF_ID port map (clk, BufferOff,	IFFlush_UC, IFFlush_HU, PC4, instruct, PC4out, instructOut);
 	-- BufferOff, Flush_UC -> UC; Flush_HU -> HU; 	instructOut entra no estagio ID;	PC4out vai diretamente para o buffer ID/EX
@@ -328,12 +330,12 @@ begin
 	-- ALUOpOut, func -> buffer ID/EX;	ULAc entra na ULA do estagio EX
 	
 	buffer2: Buffer_ID_EX port map (clk, BufferOff, IDFlush_HU, PC4out, regData1, regData2, endDesvio, rs, rt, rd,
-							PC4out, regData1out, regData2out, endDesvioOut, rsOut, rtOut, rdOut, ALUOp_F, RegDst_F,
+							PC4out_EX, regData1out, regData2out, endDesvioOut, rsOut, rtOut, rdOut, ALUOp_F, RegDst_F,
 							ALUOpOut, muxReg, MemRead_F, MemWrite_F, Memtoreg_F, RegWrite_UC_F, PCSrc_F,
 							MemRead_EX, MemWrite_EX, Memtoreg_EX, RegWrite_EX, PCSrc_EX);
 	
 	
-	Est_EX: Estagio_EX port map (clk, regData1out, regData2out, resultadoMEM, resultadoWB, endDesvioOut, PC4out, rtOut, rdOut,
+	Est_EX: Estagio_EX port map (clk, regData1out, regData2out, resultadoMEM, resultadoWB, endDesvioOut, PC4out_EX, rtOut, rdOut,
 								 ULAc, ForwardA, ForwardB, muxReg, resultado, endWriteMem, PCdesvio_EX, regWrite, vaum, zero);
 	--ForwardA, ForwardB -> forwardUnit;	resultado, endWriteMem, PCdesvio vao para o buffer EX/MEM
 	--os demais sinais vem do buffer

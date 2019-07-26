@@ -73,9 +73,9 @@ begin
 		 ram(29) <= "00000000000000001111111111111111";
 		 ram(30) <= "00000000000001111111111111111111";
 		 ram(31) <= "00000000000000000000000000000000";
-		 ram(2) <= "00000000000000000000000000000100";
-		 ram(3) <= "00000000000000000000000000000010";
-		 ram(1) <= "00000000000000000000000000000100";
+		 ram(2) <= "00000000000000000000000000100000";
+		 ram(3) <= "00000000000000000000000000110000";
+		 ram(1) <= "00000000000000000000000000010000";
 	 elsif (clk'event and clk = '1' and reset = '0') then
         if (we = '1') then
            ram(to_integer(unsigned(endwrite))) <= dadoina after Twrite;
@@ -87,9 +87,9 @@ end process;
 
 ---- User Signal Assignments ----
 dadoouta <= ram(to_integer(unsigned
-								(enda_reg))) after Tread;
+								(enda))) after Tread;
 dadooutb <= ram(to_integer(unsigned
-								(endb_reg))) after Tread;
+								(endb))) after Tread;
 
 								
 								
