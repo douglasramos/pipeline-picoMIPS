@@ -149,7 +149,7 @@ begin
 						 MemRead  <= '1';
 						 MemWrite <= '0'; 
 						 MemtoReg <= '1';
-						 ALUOp    <= "001";
+						 ALUOp    <= "100";
 		
 		when "101011" => RegDst   <= '0';     --sw
 						 Regwrite <= '0';
@@ -158,7 +158,7 @@ begin
 						 MemRead  <= '0';
 						 MemWrite <= '1'; 
 						 MemtoReg <= '0';
-						 ALUOp    <= "001";
+						 ALUOp    <= "100";
 						 
 		when others   => RegDst   <= '0';
 						 Regwrite <= '0';
