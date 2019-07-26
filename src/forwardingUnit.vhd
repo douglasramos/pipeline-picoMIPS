@@ -10,8 +10,8 @@ entity forwardingUnit is
 		MemWbRd    : in  std_logic_vector(4 downto 0);
 		IdExRs     : in  std_logic_vector(4 downto 0);
 		IdExRt     : in  std_logic_vector(4 downto 0);
-		ForwardA   : out std_logic_vector(1 downto 0);
-		ForwardB   : out std_logic_vector(1 downto 0)
+		ForwardA   : out std_logic_vector(2 downto 0);
+		ForwardB   : out std_logic_vector(2 downto 0)
   );
 end forwardingUnit;
 
@@ -48,20 +48,20 @@ begin
 process(A,B,C,D,E,F,G,H,I,J)
 	begin
 		if(A = '1' and B = '1' and E = '1') then
-			ForwardA <= "10";
+			ForwardA <= "010";
 		elsif (G = '1' and H = '1' and I = '1' and (not (A = '1' and B = '1' and E = '1')) and I = '1') then
-			ForwardA <= "01";
+			ForwardA <= "001";
 		else
-			ForwardA <= "00";
+			ForwardA <= "000";
 	
 		end if;
 	
 		if(A = '1' and B = '1' and F = '1') then
-			ForwardB <= "10";
+			ForwardB <= "010";
 		elsif(G = '1' and H = '1' and J = '1' and (not (A = '1' and B = '1' and F = '1')) and J = '1') then
-			ForwardB <= "01";
+			ForwardB <= "001";
 		else
-			ForwardB <= "00";
+			ForwardB <= "000";
 		end if;				 
 	
 end process;  

@@ -22,7 +22,6 @@ entity Estagio_IF is
 	   muxc : in std_logic;
        instruct, PC4 : out std_logic_vector(31 downto 0);
 	   
-	   write_options, update_info: in std_logic;
 	   stall: out std_logic;
 	   mem_bloco_data: in  word_vector_type(15 downto 0);
 	   mem_addr: out std_logic_vector(15 downto 0) := (others => '0')
