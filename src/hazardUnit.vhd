@@ -37,22 +37,6 @@ type state_type is (s0, s1, s2, s3);
 signal PS, NS : state_type;
 signal state  : std_logic_vector(1 downto 0);   
 
-component registradorWE is
-  generic(
-       NumeroBits : INTEGER := 8;
-       Tprop : time := 5 ns;
-       Tsetup : time := 2 ns
-  );
-  port(
-       C : in std_logic;
-       R : in std_logic;
-       S : in std_logic;
-       D : in std_logic_vector(NumeroBits - 1 downto 0);
-       Q : out std_logic_vector(NumeroBits - 1 downto 0);
-	   WriteEnable : in std_logic
-  );
-end component;
-
 signal A              : std_logic;
 signal B              : std_logic;
 signal D1, D0         : std_logic;
@@ -130,9 +114,9 @@ end process comb_proc;
 	comparador1 : comparador5Bits port map(IDEXRt, IFIDRs,A);
 	comparador2 : comparador5Bits port map(IDEXRt, IFIDRt,B);
 	
-	stallResult(0) <= IDEXMemRead and (A or B);                --Zerar sinais de controle nos buffers IF/ID
+	isStallForward <= IDEXMemRead and (A or B);                --Zerar sinais de controle nos buffers IF/ID
 												               --importante: com esse sinal, implementar lógica para o PC no estágio IF re-executar uma instrução (fazer sistema de desincrementar 4, ou de guardar o ´último valor de PC que passou pelo estágio IF)
-	isStallForward <= stallClk(0);
+	 
 	
 --------------------------------------------------------------------------------------------------------------
 --Control Hazards
@@ -154,6 +138,5 @@ end process comb_proc;
 	D1 <= ((not Q1) and (not Q0) and isBranch(1) and (not isBranch(0))) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 2 * TpropLogTime;
 	D0 <= ((not Q1) and (not Q0) and (not isBranch(1)) and isBranch(0)) or ((not Q1) and Q0 and equality) or (Q1 and (not Q0) and (not equality)) after 2 * TpropLogTime;
 	
-	stallRegister : registradorWE generic map(2, 1 ns, 0.25 ns) port map(clk, '0', '0', stallResult, stallClk, '1');
 	
 end hazardUnit;
