@@ -76,6 +76,7 @@ begin
 		 ram(2) <= "00000000000000000000000010110000";
 		 ram(3) <= "00000000000000000000000000110000";
 		 ram(1) <= "00000000000000000000000000010000";
+		 ram(4) <= "00000000000000000000000100000000";
 	 elsif (clk'event and clk = '1' and reset = '0') then
         if (we = '1') then
            ram(to_integer(unsigned(endwrite))) <= dadoina after Twrite;

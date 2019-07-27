@@ -26,7 +26,10 @@ entity Buffer_ID_EX is
 	   
 	   -- controle dos estagios seguintes --
 	   MemReadIn, MemWriteIn, MemtoregIn, RegwriteIn, PCSrcIn : in std_logic;
-	   MemReadOut, MemWriteOut, MemtoregOut, RegwriteOut, PCSrcOut : out std_logic
+	   MemReadOut, MemWriteOut, MemtoregOut, RegwriteOut, PCSrcOut : out std_logic;
+	   
+	   funcIn : in std_logic_vector(5 downto 0);
+	   funcOut : out std_logic_vector(5 downto 0)
 	   
   );
 end Buffer_ID_EX;
@@ -37,6 +40,7 @@ signal PC, regData1, regData2, endDesvio: std_logic_vector(31 downto 0);
 signal rs, rt, rd : std_logic_vector(4 downto 0);
 signal ULAc : std_logic_vector(2 downto 0);
 signal muxReg, MemRead, MemWrite, Memtoreg, Regwrite, PCSrc : std_logic;
+signal func : std_logic_vector(5 downto 0);
 
 begin
 
@@ -60,6 +64,7 @@ begin
 		Memtoreg <= '0';
 		Regwrite <= '0';
 		PCSrc <= '0';
+		func <= "000000";
 		
 	elsif (clk'event and clk='1' and BufferOff = '0') then  -- Clock na borda de subida
 		PC <= PCin;
@@ -78,6 +83,7 @@ begin
 		Memtoreg <= MemtoregIn;
 		Regwrite <= RegwriteIn;
 		PCSrc <= PCSrcIn;
+		func <= funcIn;
 	end if;
 end process;
 
@@ -97,5 +103,6 @@ MemWriteOut <= MemWrite;
 MemtoregOut <= Memtoreg;
 RegwriteOut <= Regwrite;
 PCSrcOut <= PCSrc;
+funcOut <= func;
 
 end Buffer_ID_EX;
