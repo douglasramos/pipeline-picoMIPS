@@ -384,7 +384,7 @@ begin
 	
 	
 
-	fwd: forwardingUnit port map (MemWrite_EX, MemWrite_WB, endWrite_MEM, endWrite_WB, rsOut, rtOut, ForwardA, ForwardB);
+	fwd: forwardingUnit port map (RegWrite_EX, RegWrite_WB, endWrite_MEM, endWrite_WB, rsOut, rtOut, ForwardA, ForwardB);
 	
 	hzd: hazardUnit generic map (0 ns, 0 ns, 0 ns, 0 ns)
 					port map (clk, op, resultado(0), MemRead_EX, rtOut, rs, rt, isStallForward, IFFlush_HU, IDFlush_HU);
