@@ -52,26 +52,44 @@ architecture CacheD_arch of CacheD is
 
 
 	--- Cada "linha" em um conjunto possui valid + dirty + tag + data
-	type set_row_type is record
+	type block_row_type is record
          valid: std_logic;
 		 dirty: std_logic;
          tag:   std_logic_vector(2 downto 0);
          data:  word_vector_type(words_per_block - 1 downto 0);
-    end record set_row_type;
+    end record block_row_type;
 
-	type set_type is array (blocks_per_set - 1 downto 0) of set_row_type;
+	type set_type is array (blocks_per_set - 1 downto 0) of block_row_type;
 
-	constant set_row_init : set_row_type := (valid => '0',
-										     dirty => '0',
-										     tag =>   (others => '0'),
-											 data =>  (others => word_vector_init));
+	constant block_row_init : block_row_type := (valid => '0',
+										         dirty => '0',
+										         tag =>   (others => '0'),
+											     data =>  (others => word_vector_init));
 
-	constant set_with_value : set_row_type := (valid => '1',
-										               dirty =>  '0',
-										               tag =>    "000",
-											           data =>  (0 => word_vector_value ,
-													            others => word_vector_init));
-
+	constant block_with_value : block_row_type := (valid => '1',
+										           dirty =>  '0',
+										           tag =>   (others => '0'),
+											       data =>  (0 => word_vector_value,
+												             others => word_vector_init));		  
+												   
+	constant block_with_value2 : block_row_type := (valid => '1',
+										            dirty => '0',
+										            tag =>   (others => '0'),
+											        data =>  (0 => word_vector_value2 ,
+												   			 others => word_vector_init));
+												   
+   	constant block_with_value3 : block_row_type := (valid => '1',
+										            dirty => '0',
+										            tag =>   (others => '0'),
+											        data =>  (0 => word_vector_value3 ,
+												   			 others => word_vector_init));
+												   
+    constant block_with_value4 : block_row_type := (valid => '1',
+										            dirty => '0',
+										            tag =>   (others => '0'),
+											        data =>  (0 => word_vector_value4 ,
+													         others => word_vector_init));											
+												   
     --- Cache eh formado por um array de conjuntos
 	type set_vector_type is record
 		 set: set_type;
@@ -79,12 +97,19 @@ architecture CacheD_arch of CacheD is
 
 	type cache_type is array (number_of_sets - 1 downto 0) of set_vector_type;
 
-	constant cache_set_init : set_vector_type := (set => (others => set_row_init));
+	constant cache_set_init : set_vector_type := (set => (others => block_row_init));
 
-	constant cache_set_with_value : set_vector_type := (set => (0 => set_with_value, 1 => set_row_init));
+	constant cache_set_with_value  : set_vector_type := (set => (0 => block_with_value,  1 => block_row_init));
+	constant cache_set_with_value2 : set_vector_type := (set => (0 => block_with_value2, 1 => block_row_init));
+	constant cache_set_with_value3 : set_vector_type := (set => (0 => block_with_value3, 1 => block_row_init));
+	constant cache_set_with_value4 : set_vector_type := (set => (0 => block_with_value4, 1 => block_row_init));
 
 	--- definicao do cache
-    signal cache: cache_type := (4 => cache_set_with_value, others => cache_set_init);
+    signal cache: cache_type := (4 => cache_set_with_value,    -- endereço x100
+								 84 => cache_set_with_value2,   -- endereço x1500
+								 88 => cache_set_with_value3,   -- endereço x1600
+								 92 => cache_set_with_value4,   -- endereço x1700
+								 others => cache_set_init);
 
 	signal mem_block_addr: natural;
 	signal index: natural;

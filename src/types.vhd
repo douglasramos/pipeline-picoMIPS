@@ -23,6 +23,9 @@ package types is
 
 	constant word_vector_test: word_type := (others => '1');
 
-	constant word_vector_value: word_type := x"00000070";
+	constant word_vector_value:  word_type := x"00000070";
+	constant word_vector_value2: word_type := x"00001570";
+	constant word_vector_value3: word_type := x"00001670";
+	constant word_vector_value4: word_type := x"00001770";
 
 end package types;
