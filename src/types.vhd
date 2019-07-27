@@ -18,6 +18,8 @@ package types is
 
 	constant word_vector_instruction1: word_type := x"8C410050";
 	constant word_vector_instruction2: word_type := x"20230005";
+	constant word_vector_instruction3: word_type := x"00430820";
+	constant word_vector_instruction4: word_type := x"00242820";
 
 	constant word_vector_test: word_type := (others => '1');
 
