@@ -24,7 +24,9 @@ entity Estagio_IF is
 	   
 	   stall: out std_logic;
 	   mem_bloco_data: in  word_vector_type(15 downto 0);
-	   mem_addr: out std_logic_vector(15 downto 0) := (others => '0')
+	   mem_addr: out std_logic_vector(15 downto 0) := (others => '0');
+	   enable: in std_logic;
+       PCin: in std_logic_vector(31 downto 0)
 	   
   );
 end Estagio_IF;
@@ -135,17 +137,18 @@ signal i_mem_rw: std_logic;
 signal i_mem_enable: std_logic;
 ------------------------------------------------------------
 
-signal PC, address: std_logic_vector(31 downto 0);
+signal PC, address, address_temp: std_logic_vector(31 downto 0);
 
 begin			
 	
 mux: multiplexador generic map (32, 0 ns, 0 ns) port map (muxc, PCatualizado, PCdesvio, PC);
 soma: somador generic map (32, 0 ns, 0 ns) port map ('1', '0', PC, "00000000000000000000000000000100", PC4);
-reg: registrador generic map (32, 0 ns, 0 ns) port map (clk, reset, '0', PC, address);
+reg: registrador generic map (32, 0 ns, 0 ns) port map (clk, reset, '0', PC, address_temp);
 cache: cacheI generic map (0 ns) port map (i_write_options, i_update_info, i_hit, address(15 downto 0), instruct, mem_bloco_data, mem_addr); 
 cacheControl: ControlCacheI	generic map (0 ns) 
-                            port map (clk_cache, stall, PC, i_hit, i_write_options, i_update_info, i_mem_ready, i_mem_rw, i_mem_enable);
+							port map (clk_cache, stall, PC, i_hit, i_write_options, i_update_info, i_mem_ready, i_mem_rw, i_mem_enable); 
 
+address <= PCin when enable = '1' else address_temp;
 	
 
 
