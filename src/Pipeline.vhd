@@ -224,7 +224,9 @@ component Buffer_MEM_WB is
 	   MemtoregIn, RegwriteENin, MemWriteIn :	in std_logic;
 	   ReadDataOut, resultadoOut : out std_logic_vector(31 downto 0);
 	   regWriteOut : out std_logic_vector(4 downto 0);
-	   MemtoregOut, RegwriteENout, MemWriteOut : out std_logic
+	   MemtoregOut, RegwriteENout, MemWriteOut : out std_logic;
+	   PCSrcIn : in std_logic;
+	   PCSrcOut : out std_logic
 	   
   );
 end component;
@@ -252,7 +254,7 @@ end component;
 	--signal muxc : std_logic;
 	
 	--sinais relacionados ao Cache I
-	signal stall_I: std_logic;		--saida
+	signal stall_I, cPc: std_logic;		--saida
 	signal mem_bloco_data:  word_vector_type(15 downto 0);
 	signal mem_addr: std_logic_vector(15 downto 0) := (others => '0');		--saida
 	
@@ -325,6 +327,8 @@ begin
 	
 	Est_IF: Estagio_IF port map (clk, clk_cache, reset, PCatualizado, PC, muxc, instruct, PC4, stall_I, mem_bloco_data, mem_addr, enable, PCin);
 	--PCSrc -> WB;	PCdesvio -> estagio MEM;	instruct e PC4 vao para o buffer
+	cPc <= '1' when muxc = '1' else PCSrc_WB;
+	PCdesvioIF <= PC when cpc = '1' else PCdesvio;
 	
 	PCtemp <= (PC4out_EX - x"00000004");
 	PCin <= PCtemp when isStallForward = '1' else PCatualizado when PC4out /= x"00000000";
@@ -380,7 +384,7 @@ begin
 	
 	
 	buffer4: Buffer_MEM_WB port map (clk, BufferOff, data_out, address, endWrite_MEM, Memtoreg_MEM, RegWrite_MEM, MemWrite_MEM, readData, resultado_WB,
-									 endWrite_WB, Memtoreg_WB, RegWrite_WB, MemWrite_WB);
+									 endWrite_WB, Memtoreg_WB, RegWrite_WB, MemWrite_WB, PCSrc_MEM, PCSrc_WB);
 	
 	
 

@@ -12,7 +12,9 @@ entity Buffer_MEM_WB is
 	   MemtoregIn, RegwriteENin, MemWriteIn :	in std_logic;
 	   ReadDataOut, resultadoOut : out std_logic_vector(31 downto 0);
 	   regWriteOut : out std_logic_vector(4 downto 0);
-	   MemtoregOut, RegwriteENout, MemWriteOut : out std_logic
+	   MemtoregOut, RegwriteENout, MemWriteOut : out std_logic;
+	   PCSrcIn : in std_logic;
+	   PCSrcOut : out std_logic
 	   
   );
 end Buffer_MEM_WB;
@@ -20,7 +22,7 @@ end Buffer_MEM_WB;
 architecture Buffer_MEM_WB of Buffer_MEM_WB is
 
 signal resultado, ReadData: std_logic_vector(31 downto 0);
-signal Memtoreg, RegwriteEN, MemWrite: std_logic;
+signal Memtoreg, RegwriteEN, MemWrite, PCSrc: std_logic;
 signal regWrite: std_logic_vector(4 downto 0);
 
 begin
@@ -35,6 +37,7 @@ begin
 		RegwriteEN <= RegwriteENin;
 		regWrite <= regWriteIn;
 		MemWrite <= MemWriteIn;
+		PCSrc <= PCSrcIn;
 	end if;
 end process;
 
@@ -44,6 +47,7 @@ MemtoregOut <= Memtoreg;
 RegwriteENout <= RegwriteEN;
 regWriteOut <= regWrite;
 MemWriteOut <= MemWrite;
+PCSrcOut <= PCSrc;
 
 
 end Buffer_MEM_WB;
