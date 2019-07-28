@@ -81,14 +81,75 @@ architecture CacheI_arch of CacheI is
 												 tag => (others => '0'),   
 												 data => (0 => word_vector_instruction3,
 												 		  4 => word_vector_instruction4,
-												 		  others => word_vector_init));														   
+												 		  others => word_vector_init));
 														   
+   	constant cache_row_instruction_t1 : cache_row_type := (valid => '1',
+												 tag => (others => '0'),   
+												 data => (0 => j_10,
+												 		  1 => jal_20,
+												 		  2 => add_r1_r2_r3,
+														  3 => slt_r4_r5_r6,
+														  4 => addu_r7_r8_r9,
+														  5 => sll_r10_r11_r12,
+														  6 => lw_r1_50_r2,
+														  7 => sw_r3_20_r4,
+														  8 => addi_r1_r2_7,
+														  9 => slti_r1_r2_20,
+														  others => word_vector_init));	
+														   
+	constant cache_row_instruction_t2 : cache_row_type := (valid => '1',
+												 tag => (others => '0'),   
+												 data => (0 => add_r1_r2_r3,
+												 		  1 => add_r4_r5_r6,
+												 		  2 => add_r7_r8_r9,
+												 		  others => word_vector_init));	
+														   
+ 	constant cache_row_instruction_t3 : cache_row_type := (valid => '1',
+												 tag => (others => '0'),   
+												 data => (0 => add_0_r1_r2,
+												 		  1 => addi_r3_0_5,
+												 		  others => word_vector_init));	
+
+  	constant cache_row_instruction_t5 : cache_row_type := (valid => '1',
+												 tag => (others => '0'),   
+												 data => (0 => lw_r1_20_r2,
+												 		  1 => add_r3_r4_r5,
+												 		  2 => add_r6_r1_r7,
+												 		  others => word_vector_init));	
+														   
+   	constant cache_row_instruction_t6 : cache_row_type := (valid => '1',
+												 tag => (others => '0'),   
+												 data => (0 => add_r1_r1_r2,
+												 		  1 => add_r1_r1_r3,
+												 		  2 => add_r1_r1_r4,
+												 		  others => word_vector_init));	
+														   
+  	constant cache_row_instruction_t7 : cache_row_type := (valid => '1',
+												 tag => (others => '0'),   
+												 data => (0 => beq_r1_r2_25,
+												 		  1 => add_r3_r4_r5,
+												 		  2 => add_r6_r7_r8,
+														  3 => add_r9_r10_r11,
+														  4 => addu_r7_r8_r9,
+														  5 => sll_r10_r11_r12,
+														  6 => lw_r1_50_r2,
+														  7 => sw_r3_20_r4,
+														  8 => addi_r1_r2_7,
+														  9 => slti_r1_r2_20,
+												 		  others => word_vector_init));	
+														   														   
 
 	--- definicao do cache												 
     signal cache: cache_type := (64 => 	cache_row_instruction,
 								 68 => 	cache_row_instruction2,
 								 72 =>  cache_row_instruction_nop2,
 								 128 => cache_row_instruction_nop, 
+								 148 => cache_row_instruction_t1,
+								 149 => cache_row_instruction_t2,
+								 150 => cache_row_instruction_t3,
+								 151 => cache_row_instruction_t5,
+								 152 => cache_row_instruction_t6,
+								 153 => cache_row_instruction_t7,
 								 others => cache_row_init);
 	
 	--- Demais sinais internos
