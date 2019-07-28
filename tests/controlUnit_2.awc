@@ -6,7 +6,7 @@
     </comment>
     <databases>
         <database id="">*virtual*</database>
-        <database id="fc4596f58bd5919b385d6e5685472900">controlUnit_2.asdb</database>
+        <database id="fc4596f58bd523b03d5d1ac65d5b0000">controlUnit_2.asdb</database>
     </databases>
     <signallists>
         <signallist id="0">
@@ -21,21 +21,6 @@
         <signal>/controlUnit/MemtoReg</signal>
         <signal>/controlUnit/ALUOp</signal>
         <signal>/controlUnit/EXExcInterrupt</signal>
-        <signal>/controlUnit/IFFlush</signal>
-        <signal>/controlUnit/IDFlush</signal>
-        <signal>/controlUnit/EXFlush</signal>
-        <signal>/controlUnit/BufferOff</signal>
-        <signal>/controlUnit/causeValue</signal>
-        <signal>/controlUnit/EPCWriteEnable</signal>
-        <signal>/controlUnit/PS</signal>
-        <signal>/controlUnit/NS</signal>
-        <signal>/controlUnit/D1</signal>
-        <signal>/controlUnit/D0</signal>
-        <signal>/controlUnit/Q1</signal>
-        <signal>/controlUnit/Q0</signal>
-        <signal>/controlUnit/isCause</signal>
-        <signal>/controlUnit/muxSel</signal>
-        <signal>/controlUnit/state</signal>
         </signallist>
     </signallists>
     <prefbases>
@@ -50,7 +35,7 @@
     </bookmarkbases>
     <cursorbases>
         <cursors id="0">
-            <cursor value="325512" label="Cursor 1" locked="0" />
+            <cursor value="15255" label="Cursor 1" locked="0" />
         </cursors>
     </cursorbases>
     <measurementbases>
