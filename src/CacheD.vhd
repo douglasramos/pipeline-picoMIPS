@@ -172,9 +172,9 @@ begin
 			end if;
 
 			-- Escreve na memoria
-			--if (buffer_write'event and buffer_write = '1') then
-				--mem_block_out <= cache(index).set(set_index).data after access_time;
-			--end if;
+			if (mem_write'event and mem_write = '1') then
+				mem_block_out <= cache(index).set(set_index).data after access_time;
+			end if;
 
 		end if;
 	end process;

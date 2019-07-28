@@ -20,10 +20,9 @@ entity ControlCacheD is
         access_time: in time := 5 ns
     );
     port (			  
-	
-		clk:            in std_logic;		
-
-		-- I/O relacionados ao stage MREADY
+			
+		-- I/O relacionados ao stage MEM
+		clk:            in std_logic;
 		clk_pipeline:   in  std_logic;
         cpu_write:      in  std_logic;
 		cpu_addr:       in  std_logic_vector(15 downto 0);
