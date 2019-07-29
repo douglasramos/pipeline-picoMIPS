@@ -58,14 +58,14 @@ architecture Memory_arch of Memory is
     type mem_type is array (number_of_blocks - 1 downto 0) of mem_row_type;
 	
 	constant mew_row_instruction : mem_row_type :=  (data => (0 => word_vector_instruction1,
-													   1 => word_vector_instruction2,
-													   others => word_vector_init)); 
+													   		  1 => word_vector_instruction2,
+													   		  others => word_vector_init)); 
 													   
 	constant mem_row_init : mem_row_type :=  (data => (others => word_vector_init));
 	
 	--- definicao do cache												 
     signal memory: mem_type := (192 => mew_row_instruction,
-								others => mem_row_init);	-- aqui irá em algum index, um valor diferente para row
+								others => mem_row_init);
 	
 	--- Demais sinais internos
 	signal ci_block_addr: natural;
@@ -87,15 +87,6 @@ begin
 	-- enable geral
 	enable <= ci_enable or cd_enable;
 	
-    --  saidas cache de instrucoes
-	--ci_data_block <=  memory(ci_index).data;
-	--ci_mem_ready  <=  std_logic := '0'; 
-			
-	
-	-- saidas cache de dados
-	--cd_data_out <=  memory(cd_index).data;
-	--ci_mem_ready  <=  std_logic := '0'; 
-	
 	
 	-- atualizacao do cache de acordo com os sinais de controle
 	process(enable)
@@ -110,15 +101,15 @@ begin
 			
 			-- Memory Read Cache Dados
 			if (cd_enable = '1' and ci_mem_rw = '0') then
-				ci_data_block <=  memory(ci_index).data after access_time;
-				ci_mem_ready  <=  '1' after access_time;
+				cd_data_out   <=  memory(ci_index).data after access_time;
+				cd_mem_ready  <=  '1' after access_time;
 			end if;
 			
-			-- write_options 0 -> mantem valor do cache inalterado
-			-- write_options 1 -> usa o valor do mem (ocorreu miss)
-			--if (write_options'event and write_options = '1') then
-			--	cache(index).data <= mem_bloco_data;
-			--end if;
+			-- Memory Write Cache Dados
+			if (cd_enable = '1' and ci_mem_rw = '1') then
+				memory(ci_index).data <= cd_data_in after access_time;  
+				ci_mem_ready  <=  '1' after access_time;
+			end if;
 			
 		end if;
 	end process;
